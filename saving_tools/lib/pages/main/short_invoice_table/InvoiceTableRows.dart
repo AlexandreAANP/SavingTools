@@ -41,11 +41,8 @@ class _InvoiceTableRow extends Container {
   _InvoiceTableRow(InvoiceDTO invoiceDTO, List<int> flexs)
       : super(
           decoration: BoxDecoration(
+            color: Color.fromARGB(255, 255, 255, 255),
             border: Border(
-              top: BorderSide(
-                color: Color.fromARGB(255, 9, 102, 45),
-                width: 1,
-              ),
               bottom: BorderSide(
                 color: Color.fromARGB(255, 9, 102, 45),
                 width: 1,
@@ -53,10 +50,13 @@ class _InvoiceTableRow extends Container {
             ),
           ),
           margin: EdgeInsets.only(left: 10, right: 10),
-          child: Row(children: [
-            Expanded(flex: flexs[0], child: _InvoiceCell(invoiceDTO.invoice.toString(), invoiceDTO.date.toString())),
-            Expanded(flex: flexs[1], child: _AmountCell(invoiceDTO.amount.toString() + "€", isDebit: invoiceDTO.amount! < 0)),
-          ],)
+          child: GestureDetector(
+            onLongPress: () => print("TODO: Should redirect to invoice page. Invoice: ${invoiceDTO.invoice}"),
+            child: Row(children: [
+              Expanded(flex: flexs[0], child: _InvoiceCell(invoiceDTO.invoice.toString(), invoiceDTO.date.toString())),
+              Expanded(flex: flexs[1], child: _AmountCell(invoiceDTO.amount.toString() + "€", isDebit: invoiceDTO.amount! < 0)),
+            ],)
+          ) 
             
         );
 }
@@ -79,6 +79,14 @@ class _AmountCell extends Container {
 class _InvoiceCell extends Container {
   _InvoiceCell(String text, String date)
       : super(
+          decoration: BoxDecoration(
+            border: Border(
+              right: BorderSide(
+                color: Color.fromARGB(255, 9, 102, 45),
+                width: 1
+              ),
+            ),
+          ),
           margin: EdgeInsets.only(right: 5),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -91,7 +99,7 @@ class _InvoiceCell extends Container {
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w400,
-                      color: Color.fromARGB(255, 9, 102, 45),
+                      color: Color.fromARGB(255, 0, 0, 0),
                     ),
                   ),
                   Text(
@@ -100,7 +108,7 @@ class _InvoiceCell extends Container {
                     textAlign: TextAlign.left,
                     style: TextStyle(
                       fontSize: 14,
-                      color: Color.fromARGB(255, 9, 102, 45),
+                      color: Color.fromARGB(255, 0, 0, 0),
                     ),
                   )
             ]

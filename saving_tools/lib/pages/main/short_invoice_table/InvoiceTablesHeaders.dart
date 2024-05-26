@@ -14,12 +14,22 @@ class InvoiceTableHeaders {
 class _HeaderCell extends Container{
   _HeaderCell(String text)
       : super(
+          decoration: BoxDecoration(
+            
+            border: Border(
+              bottom: BorderSide(
+                color: Color.fromARGB(255, 9, 102, 45),
+                width: 1,
+              ),
+              
+            ),
+          ),
           margin: EdgeInsets.all(10),
           child: Text(text,
               textAlign: TextAlign.left,
               style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
-                  color: Color.fromARGB(255, 9, 102, 45))),
+                  color: Color.fromARGB(255, 0, 0, 0))),
         );
 }

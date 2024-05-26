@@ -23,14 +23,15 @@ class _PieChartState extends State<PieChart> {
   @override
   Widget build(BuildContext context) {
     pie_chart.PieChart pieChart = pie_chart.PieChart(dataMap: dataMap);
-    return Expanded(
-      flex: 1,
-      child: Container(
-              margin: const EdgeInsets.all(20),
+    return Container(
+              color: Color.fromARGB(255, 255, 255, 255),
+              //width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height * 0.6,
+              //margin: const EdgeInsets.all(20),
               child: Column(
                 children: [
                   Container(
-                    margin: const EdgeInsets.only(bottom: 20),
+                    margin: const EdgeInsets.all(20),
                     child: Text(
                       "Gastos em categorias",
                       style: TextStyle(
@@ -42,7 +43,6 @@ class _PieChartState extends State<PieChart> {
                   pieChart,
                 ],
               ),
-            )
-    );
+            );
   }
 }
