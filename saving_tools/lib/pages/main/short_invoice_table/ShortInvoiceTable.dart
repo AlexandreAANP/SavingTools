@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:saving_tools/DTOs/InvoiceDTO.dart';
+import 'package:saving_tools/Services/InvoiceService.dart';
 import 'package:saving_tools/pages/main/short_invoice_table/InvoiceTableRows.dart';
 import 'package:saving_tools/pages/main/short_invoice_table/InvoiceTablesHeaders.dart';
 
@@ -9,16 +10,16 @@ class ShortInvoiceTable extends StatefulWidget {
 }
 
 class _ShortInvoiceTableState extends State<ShortInvoiceTable> {
-  Map<InvoiceDTO, List<int>> selectedInvoices = {
-    InvoiceDTO(
-        invoice: "Pagamento por mbway a ALEXANDRE PITA nº123 123888412 12",
-        date: "2021-01-01",
-        amount: 100.0): [2, 1],
-    InvoiceDTO(invoice: "2", date: "2021-01-02", amount: 200.0): [2, 1],
-    InvoiceDTO(invoice: "3", date: "2021-01-03", amount: -300.0): [2, 1],
-    InvoiceDTO(invoice: "4", date: "2021-01-04", amount: 400.0) : [2,1],
-    // InvoiceDTO(invoice: "5", date: "2021-01-05", amount: 500.0) : [2,1,
-  };
+
+  Future<Map<InvoiceDTO, List<int>>> allInvoices() async {
+    List<InvoiceDTO> invoices = await InvoiceService().ListInvoicesShortTableAllTypes();
+    Map<InvoiceDTO, List<int>> selectedInvoices = {};
+    invoices.forEach((element) {
+      selectedInvoices[element] = [2, 1];
+    });
+    return selectedInvoices;
+  }
+
 
   Map<String, int> headers = {"Invoice": 2, "Amount": 1};
 
@@ -35,7 +36,7 @@ class _ShortInvoiceTableState extends State<ShortInvoiceTable> {
         child: Column(
           children: [
             Expanded(flex: 1, child: GenerateTableSettings()),
-            Expanded(flex: 3, child: GenerateTable(selectedInvoices, headers)),
+            Expanded(flex: 3, child: GenerateTable()),
             Expanded(flex: 1, child: GenerateButtonInvoiceTable())
           ],
         ));
@@ -127,33 +128,30 @@ class _ShortInvoiceTableState extends State<ShortInvoiceTable> {
         ]));
   }
 
-  Container GenerateTable(
-      Map<InvoiceDTO, List<int>> selectedInvoices, Map<String, int> headers) {
-    Filter filter = Filter.all;
-    if (!showCredits) {
-      if (!showDebits)
-        filter = Filter.none;
-      else
-        filter = Filter.debit;
-    } else if (!showDebits) {
-      if (!showCredits)
-        filter = Filter.none;
-      else
-        filter = Filter.credit;
-    }
+  FutureBuilder<Map<InvoiceDTO, List<int>>> GenerateTable(){
+    return FutureBuilder<Map<InvoiceDTO, List<int>>>(
+        future: allInvoices(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else {
+            return Container(
+                margin: EdgeInsets.only(left: 20, right: 20, top: 10),
+                color: Color.fromARGB(255, 255, 255, 255),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    InvoiceTableHeaders(headers).headers,
+                    ...InvoiceTableRows(snapshot.data!, filter: Filter.all).rows,
+                  ],
+                ));
+          }
+        }
+        );
+  } 
 
-    return Container(
-        margin: EdgeInsets.only(left: 20, right: 20, top: 10),
-        color: Color.fromARGB(255, 255, 255, 255),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            InvoiceTableHeaders(headers).headers,
-            ...InvoiceTableRows(selectedInvoices, filter: filter).rows,
-          ],
-        ));
-  }
+  
 
 
   Container GenerateButtonInvoiceTable() {
@@ -180,4 +178,5 @@ class _ShortInvoiceTableState extends State<ShortInvoiceTable> {
       ),
     )));
   }
+
 }

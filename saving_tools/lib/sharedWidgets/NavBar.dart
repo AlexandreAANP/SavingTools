@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:saving_tools/sharedWidgets/ToolBarMessages.dart';
 
 
 class NavBar extends StatefulWidget {
@@ -8,17 +9,42 @@ class NavBar extends StatefulWidget {
   State<NavBar> createState() => _NavBarState();
 }
 
-class _NavBarState extends State<NavBar>{
+class _NavBarState extends State<NavBar> {
   int _selectedIndex = 1;
 
   void _onItemTapped(int index) {
+    
     setState(() {
       _selectedIndex = index;
     });
+    switch (index) {
+      case 0:
+        if (ModalRoute.of(context)!.settings.name == '/profile') {
+          return;
+        }
+        Navigator.popAndPushNamed(context, '/profile');
+        break;
+      case 1:
+        if (ModalRoute.of(context)!.settings.name == '/main') {
+          return;
+        }
+        Navigator.popAndPushNamed(context, '/main');
+        break;
+      case 2:
+        if (ModalRoute.of(context)!.settings.name == '/addInvoice') {
+          return;
+        }
+        Navigator.popAndPushNamed(context, '/addInvoice');
+        break;
+      
+    }
+    
+
+    
   }
 
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     return BottomNavigationBar(
       items: const <BottomNavigationBarItem>[
         BottomNavigationBarItem(
@@ -42,7 +68,6 @@ class _NavBarState extends State<NavBar>{
       onTap: _onItemTapped,
     );
   }
-
 }
 
 

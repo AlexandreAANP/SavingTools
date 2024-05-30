@@ -1,15 +1,13 @@
+
+
 class InvoiceDTO {
+  int? id;
   String? invoice;
   String? date;
+  String? category;
+  String? type;
   double? amount;
 
-  InvoiceDTO({this.invoice, this.date, this.amount});
+  InvoiceDTO({this.id, this.invoice, this.date, this.amount, this.type, this.category});
 
-  factory InvoiceDTO.fromJson(Map<String, dynamic> json) {
-    return InvoiceDTO(
-      invoice: json['invoice'],
-      date: json['date'],
-      amount: double.tryParse(json['amount']),
-    );
-  }
 }

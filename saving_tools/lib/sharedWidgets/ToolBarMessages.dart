@@ -5,19 +5,25 @@ class ToolBarMessages extends StatefulWidget {
   const ToolBarMessages({Key? key}) : super(key: key);
 
 
-  //_ToolBarMessagesState e = _ToolBarMessagesState();
+  void AddMessage(String NewMessage){
+    ToolBarMessagesState().AddMessage("ola");
+  }
 
   @override
-  State<ToolBarMessages> createState() => _ToolBarMessagesState();
+  State<ToolBarMessages> createState() => ToolBarMessagesState();
 }
 
-class _ToolBarMessagesState extends State<ToolBarMessages>{
+class ToolBarMessagesState extends State<ToolBarMessages>{
+
+  final GlobalToolBarKey = GlobalKey<ToolBarMessagesState>();
+
   
   List<String> Messages = [];
   double index = 0;
   int timesSlide = 0;
   ScrollController _scrollController = ScrollController();
-  _ToolBarMessagesState({List<String>? Messages = null}){
+
+  ToolBarMessagesState({List<String>? Messages = null}){
     if(Messages != null && Messages.isNotEmpty){
       this.Messages = Messages;
     }
@@ -30,56 +36,6 @@ class _ToolBarMessagesState extends State<ToolBarMessages>{
       ];
     }
     loopSlideToolBar();
-  }
-
-  void AddMessage(String NewMessage) {
-    setState(() {
-      Messages.add(NewMessage);
-    });
-  }
-  void RemoveMessage(String DeleteMessage){
-    setState(() {
-      Messages.remove(DeleteMessage);
-    });
-  }
-  
-  void loopSlideToolBar() async {
-    while(true){
-      await Future.delayed(Duration(seconds: 5));
-      SlideToolBar();
-    }
-  }
-
-
-  void SlideToolBar(){
-
-    this.index += MediaQuery.of(context).size.width + 20; // the 20 it's the margin width added to the container
-    SlideToBar(offset: this.index, time: Duration(seconds: 2));
-    
-    if(this.timesSlide == Messages.length-1){
-      this.index = 0;
-      this.timesSlide = 0;
-      //Slide to beginning
-      SlideToBar(offset: 0, time: Duration(milliseconds: 1));
-
-    }
-    else{
-      this.timesSlide++;
-    }
-  }
-
-  void SlideToBar({required double offset, required Duration time}){
-
-    _scrollController.animateTo(
-      offset,
-      duration: time,
-      curve: Curves.easeInOut
-      );
-  }
-
-  _RedirectToMessagePage(String Message){
-    //Redirect to message page
-    print("TODO: Should redirect to message page. Message: \"$Message\"");
   }
 
   @override
@@ -114,10 +70,67 @@ class _ToolBarMessagesState extends State<ToolBarMessages>{
     );
 
     return Container(
+          key: GlobalToolBarKey,
           color: const Color.fromARGB(255, 192, 241, 208),
           height: 30,
           child: MessageList,
         );
 
   }
+
+  void AddMessage(String NewMessage) {
+    setState(() {
+      Messages.add(NewMessage);
+    });
+  }
+  void RemoveMessage(String DeleteMessage){
+    setState(() {
+      Messages.remove(DeleteMessage);
+    });
+  }
+  
+  void loopSlideToolBar() async {
+    while(true){
+      await Future.delayed(Duration(seconds: 5));
+      if(!mounted) break;
+      print("Hascode: ${context.hashCode}");
+      if(context.mounted)
+        SlideToolBar();
+      else
+        break;
+    }
+  }
+
+
+  void SlideToolBar(){
+    this.index += MediaQuery.of(context).size.width + 20; // the 20 it's the margin width added to the container
+    SlideToBar(offset: this.index, time: Duration(seconds: 2));
+    
+    if(this.timesSlide == Messages.length-1){
+      this.index = 0;
+      this.timesSlide = 0;
+      //Slide to beginning
+      SlideToBar(offset: 0, time: Duration(milliseconds: 1));
+
+    }
+    else{
+      this.timesSlide++;
+    }
+  }
+
+  void SlideToBar({required double offset, required Duration time}){
+
+    _scrollController.animateTo(
+      offset,
+      duration: time,
+      curve: Curves.easeInOut
+      );
+  }
+
+  _RedirectToMessagePage(String Message){
+    //Redirect to message page
+    print("TODO: Should redirect to message page. Message: \"$Message\"");
+  }
+
+  
 }
