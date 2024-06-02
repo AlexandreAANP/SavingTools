@@ -124,6 +124,10 @@ class AddInvoiceFormState extends State<AddInvoiceForm> {
                                     Category: Scaffold_key!.currentState!.invoiceCategoryValue!,
                                     Type: Scaffold_key!.currentState!.getInvoiceType()!,
                                     Amount: Scaffold_key!.currentState!.invoiceAmountValue!);
+                                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                    content: Text(
+                                        'Added Invoice: ${Scaffold_key!.currentState?.invoiceNameValue} ${Scaffold_key!.currentState?.invoiceAmountValue} ${Scaffold_key!.currentState?.invoiceCategoryValue}'),
+                                  ));
                               }
                             },
                             child: Text(

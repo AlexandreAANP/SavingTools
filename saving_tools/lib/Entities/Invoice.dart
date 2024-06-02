@@ -26,6 +26,16 @@ class Invoice {
     };
   }
 
+  static List<String> getFields() {
+    return [
+      'invoice',
+      'date',
+      'category',
+      'type',
+      'amount',
+    ];
+  }
+
   // Implement toString to make it easier to see information about
   // each dog when using the print statement.
   @override

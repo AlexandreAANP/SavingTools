@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:saving_tools/DTOs/InvoiceDTO.dart';
+import 'package:saving_tools/pages/Invoices/ListInvoices/ViewInvoiceDetails.dart';
 
 
 class InvoiceTableRows{
   List<Container> _rows = List<Container>.empty(growable: true);
   
-  
-  InvoiceTableRows(Map<InvoiceDTO,List<int>> selectedInvoices, {Filter filter = Filter.all}) {
+  BuildContext context;
+  InvoiceTableRows(this.context, Map<InvoiceDTO,List<int>> selectedInvoices, {Filter filter = Filter.all}) {
     this._rows = GenerateTableRows(selectedInvoices, filter);
   }
 
@@ -18,13 +19,13 @@ class InvoiceTableRows{
     selectedInvoices.entries.forEach((element) {
       switch (filter) {
         case Filter.debit:
-          if (element.key.amount! < 0) rows.add(_InvoiceTableRow(element.key, element.value));
+          if (element.key.amount! < 0) rows.add(_InvoiceTableRow(this.context, element.key, element.value));
           break;
         case Filter.credit:
-          if (element.key.amount! > 0) rows.add(_InvoiceTableRow(element.key, element.value));
+          if (element.key.amount! > 0) rows.add(_InvoiceTableRow(this.context, element.key, element.value));
           break;
         case Filter.all:
-          rows.add(_InvoiceTableRow(element.key, element.value));
+          rows.add(_InvoiceTableRow(this.context, element.key, element.value));
           break;
         case Filter.none:
           break;
@@ -38,7 +39,8 @@ class InvoiceTableRows{
 enum Filter { debit, credit, all, none }
 
 class _InvoiceTableRow extends Container {
-  _InvoiceTableRow(InvoiceDTO invoiceDTO, List<int> flexs)
+  BuildContext context;
+  _InvoiceTableRow(this.context, InvoiceDTO invoiceDTO, List<int> flexs)
       : super(
           decoration: BoxDecoration(
             color: Color.fromARGB(255, 255, 255, 255),
@@ -51,7 +53,7 @@ class _InvoiceTableRow extends Container {
           ),
           margin: EdgeInsets.only(left: 10, right: 10),
           child: GestureDetector(
-            onLongPress: () => print("TODO: Should redirect to invoice page. Invoice: ${invoiceDTO.invoice}"),
+            onLongPress: () => ViewInvoiceDetails(context, invoiceDTO).show(),
             child: Row(children: [
               Expanded(flex: flexs[0], child: _InvoiceCell(invoiceDTO.invoice.toString(), invoiceDTO.date.toString())),
               Expanded(flex: flexs[1], child: _AmountCell(invoiceDTO.amount.toString() + "€", isDebit: invoiceDTO.amount! < 0)),

@@ -23,6 +23,7 @@ class databaseConfig {
       // Run the CREATE TABLE statement on the database.
       return db.execute(
         'CREATE TABLE Invoice(id INTEGER PRIMARY KEY, invoice TEXT, date TEXT, category TEXT, type TEXT, amount REAL)',
+        
       );
     },
     // Set the version. This executes the onCreate function and provides a

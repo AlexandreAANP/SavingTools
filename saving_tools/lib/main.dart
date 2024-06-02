@@ -31,7 +31,8 @@ class MyApp extends StatelessWidget {
       routes: {
         '/main': (context) => MainPage(),
         '/addInvoice': (context) => AddInvoice(key: addInvoiceKey, addInvoiceKey: addInvoiceKey),
-        '/listInvoice': (context) => ListInvoice(), //TODO CHANGE TO 'ListInvoice
+        '/listInvoice': (context) => ListInvoice(),
+        "/profile": (context) => Text("Profile Page"), //TODO: Create Profile Page
         //TODO ADD MORE ROUTES
       },
     );

@@ -12,7 +12,14 @@ class ShortInvoiceTable extends StatefulWidget {
 class _ShortInvoiceTableState extends State<ShortInvoiceTable> {
 
   Future<Map<InvoiceDTO, List<int>>> allInvoices() async {
-    List<InvoiceDTO> invoices = await InvoiceService().ListInvoicesShortTableAllTypes();
+    List<InvoiceDTO> invoices = [];
+    if(this.showDebits && this.showCredits)
+      invoices = await InvoiceService().ListInvoicesShortTableAllTypes();
+    else if(this.showDebits)
+      invoices = await InvoiceService().ListDebitInvoicesShortTableAllTypes();
+    else if(this.showCredits)
+      invoices = await InvoiceService().ListCreditInvoicesShortTableAllTypes();
+
     Map<InvoiceDTO, List<int>> selectedInvoices = {};
     invoices.forEach((element) {
       selectedInvoices[element] = [2, 1];
@@ -143,7 +150,7 @@ class _ShortInvoiceTableState extends State<ShortInvoiceTable> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     InvoiceTableHeaders(headers).headers,
-                    ...InvoiceTableRows(snapshot.data!, filter: Filter.all).rows,
+                    ...InvoiceTableRows(context, snapshot.data!, filter: Filter.all).rows,
                   ],
                 ));
           }
@@ -158,7 +165,12 @@ class _ShortInvoiceTableState extends State<ShortInvoiceTable> {
     return Container(
         child: Center(
             child: TextButton(
-      onPressed: () => print("TODO: should go to the invoices page"),
+      onPressed: () {
+        
+        if (ModalRoute.of(context)!.settings.name != '/listInvoice')
+            Navigator.of(context).popAndPushNamed("/listInvoice");
+        
+      },
       style: ButtonStyle(
           backgroundColor:
               WidgetStateProperty.all<Color>(Color.fromARGB(255, 0, 170, 65)),

@@ -1,4 +1,7 @@
 import 'package:saving_tools/Entities/Invoice.dart';
+import 'package:saving_tools/Repositories/SearchTools/OrderBy.dart';
+import 'package:saving_tools/Repositories/SearchTools/Search.dart';
+import 'package:saving_tools/Repositories/SearchTools/SearchLike.dart';
 import 'package:sqflite/sqflite.dart';
 
 class InvoiceRepository{
@@ -20,20 +23,169 @@ class InvoiceRepository{
 
   }
 
+  String? getWhereSearchString({Searchlike? searchLike, Search? searchEquals, required bool searchEqualFirst}) {
+    String? whereString = "";
+    if(searchEqualFirst){
+      if(searchEquals != null){
+        whereString += searchEquals.getSearchString() ?? "";
+      } 
+      else if(searchLike != null){
+        whereString += searchLike.getSearchString() ?? "";
+      }
+      whereString = whereString == "" ? null : whereString;
+    }
+    else{
+      if(searchLike != null){
+        whereString += searchLike.getSearchString() ?? "";
+      } 
+      else if(searchEquals != null){
+        whereString += searchEquals.getSearchString() ?? "";
+      }
+      whereString = whereString == "" ? null : whereString;
+    }
+    return whereString;
+  }
   
+  List<String>? getWhereArguments({Searchlike? searchLike, Search? searchEquals, required bool searchEqualFirst}){
+    List<String>? whereArgs = [];
+    if(searchEqualFirst){
+      if(searchEquals != null){
+        whereArgs.addAll(searchEquals.getWhereArgs() ?? []);
+      } 
+      else if(searchLike != null){
+        whereArgs.addAll(searchLike.getWhereArgs() ?? []);
+      }
+    }
+
+    return whereArgs.isEmpty ? null : whereArgs;
+  }
 
 
-  Future<List<Invoice>> getInvoicesOrderedBy(Map<String, String> fields, {int? limit = null}) async {
-    String order = "";
-    fields.entries.forEach((element) async {
-        order += ",${element.key} ${element.value}";
-    });
-    order = order.substring(1);
-    // Query the table for all The invoice.
-    
+  Future<List<Invoice>> getAllSearchedInvoices({Searchlike? searchLike, Search? searchEquals, bool searchEqualFirst = true, OrderBy? order, int? limit, int? offset}) async {
+
+    String? whereString = getWhereSearchString(searchLike: searchLike, searchEquals: searchEquals, searchEqualFirst: searchEqualFirst);
+    print(whereString);
+    List<String>? whereArgs = getWhereArguments(searchLike: searchLike, searchEquals: searchEquals, searchEqualFirst: searchEqualFirst);
+
     final List<Map<String, Object?>> invoicesMaps = await this.database.query(
       table,
-      orderBy: order,
+      where: whereString,
+      whereArgs: whereArgs,
+      limit: limit,
+      offset: offset,
+      orderBy: order?.getOrderString()
+      );
+
+      return List.generate(invoicesMaps.length, (i) {
+          return Invoice(
+            id: invoicesMaps[i]['id'] as int,
+            invoice: invoicesMaps[i]['invoice'] as String,
+            date: invoicesMaps[i]['date'] as String,
+            category: invoicesMaps[i]['category'] as String,
+            type: invoicesMaps[i]['type'] as String,
+            amount: invoicesMaps[i]['amount'] as double,
+          );
+    });
+
+  }
+
+  Future<int> getTotalInvoices({Searchlike? searchLike, Search? searchEquals, bool searchEqualFirst = true}) async {
+    String? whereString = getWhereSearchString(searchLike: searchLike, searchEquals: searchEquals, searchEqualFirst: searchEqualFirst);
+    List<String>? whereArgs = getWhereArguments(searchLike: searchLike, searchEquals: searchEquals, searchEqualFirst: searchEqualFirst);
+
+    final List<Map<String, Object?>> invoicesMaps = await this.database.query(
+      table,
+      where: whereString,
+      whereArgs: whereArgs,
+    );
+
+    return invoicesMaps.length;
+  }
+
+
+  Future<Map<String,double>> getExpensesByCategory() async {
+    final List<Map<String, Object?>> invoicesMaps = await this.database.query(
+      table,
+      columns: ['category', 'amount'],
+      where: 'type = ?',
+      whereArgs: ['debit']
+    );
+
+    Map<String, double> expenses = {};
+    double total = 0;
+    invoicesMaps.forEach((element) {
+      if(expenses.containsKey(element['category'] as String)){
+        expenses[element['category'] as String] = expenses[element['category'] as String]! + (-1* (element['amount'] as double));
+      }
+      else{
+        expenses[element['category'] as String] = -1 * (element['amount'] as double);
+      }
+    });
+
+    return expenses;
+  }
+
+  Future<List<String>> getAllCategories() async{
+    final List<Map<String, Object?>> invoicesMaps = await this.database.query(
+      table,
+      columns: ['category'],
+      distinct: true
+    );
+
+    return List.generate(invoicesMaps.length, (i) {
+      return invoicesMaps[i]['category'] as String;
+    });
+  }
+
+
+
+  Future<List<Invoice>> getAllDebitInvoices({int? limit}) async {
+    // Query the table for all The invoice.
+    final List<Map<String, Object?>> invoicesMaps = await this.database.query(
+      table,
+      where: 'type = ?',
+      whereArgs: ['debit'],
+      limit: limit);
+    // Convert the List<Map<String, Object?>> into a List<invoice>.
+    return List.generate(invoicesMaps.length, (i) {
+      return Invoice(
+        id: invoicesMaps[i]['id'] as int,
+        invoice: invoicesMaps[i]['invoice'] as String,
+        date: invoicesMaps[i]['date'] as String,
+        category: invoicesMaps[i]['category'] as String,
+        type: invoicesMaps[i]['type'] as String,
+        amount: invoicesMaps[i]['amount'] as double,
+      );
+    });
+
+  }
+
+  Future<List<Invoice>> getAllCreditInvoices({int? limit}) async {
+    // Query the table for all The invoice.
+    final List<Map<String, Object?>> invoicesMaps = await this.database.query(
+      table,
+      where: 'type = ?',
+      whereArgs: ['credit'],
+      limit: limit);
+    // Convert the List<Map<String, Object?>> into a List<invoice>.
+    return List.generate(invoicesMaps.length, (i) {
+      return Invoice(
+        id: invoicesMaps[i]['id'] as int,
+        invoice: invoicesMaps[i]['invoice'] as String,
+        date: invoicesMaps[i]['date'] as String,
+        category: invoicesMaps[i]['category'] as String,
+        type: invoicesMaps[i]['type'] as String,
+        amount: invoicesMaps[i]['amount'] as double,
+      );
+    });
+
+  }
+
+
+  Future<List<Invoice>> getInvoicesOrderedBy(OrderBy order, {int? limit = null}) async {    
+    final List<Map<String, Object?>> invoicesMaps = await this.database.query(
+      table,
+      orderBy: order.toString(),
       limit: limit);
     // Convert the List<Map<String, Object?>> into a List<invoice>.
     return List.generate(invoicesMaps.length, (i) {
