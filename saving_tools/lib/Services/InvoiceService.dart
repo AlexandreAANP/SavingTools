@@ -39,7 +39,8 @@ class InvoiceService {
       date: "${Date.day}/${Date.month}/${Date.year}",
       category: Category,
       type: Type.name,
-      amount: Type == InvoiceTypeEnum.credit ? Amount : -Amount
+      amount: Type == InvoiceTypeEnum.credit ? Amount : -Amount,
+      user_id: 0
     );
     await _invoiceRepository!.insertInvoice(invoice);
     print("Invoice inserted");

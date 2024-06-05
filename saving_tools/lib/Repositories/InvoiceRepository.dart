@@ -64,7 +64,7 @@ class InvoiceRepository{
   Future<List<Invoice>> getAllSearchedInvoices({Searchlike? searchLike, Search? searchEquals, bool searchEqualFirst = true, OrderBy? order, int? limit, int? offset}) async {
 
     String? whereString = getWhereSearchString(searchLike: searchLike, searchEquals: searchEquals, searchEqualFirst: searchEqualFirst);
-    print(whereString);
+    
     List<String>? whereArgs = getWhereArguments(searchLike: searchLike, searchEquals: searchEquals, searchEqualFirst: searchEqualFirst);
 
     final List<Map<String, Object?>> invoicesMaps = await this.database.query(
@@ -84,6 +84,7 @@ class InvoiceRepository{
             category: invoicesMaps[i]['category'] as String,
             type: invoicesMaps[i]['type'] as String,
             amount: invoicesMaps[i]['amount'] as double,
+            user_id: invoicesMaps[i]['user_id'] as int
           );
     });
 
@@ -155,6 +156,7 @@ class InvoiceRepository{
         category: invoicesMaps[i]['category'] as String,
         type: invoicesMaps[i]['type'] as String,
         amount: invoicesMaps[i]['amount'] as double,
+        user_id: invoicesMaps[i]['user_id'] as int
       );
     });
 
@@ -176,6 +178,7 @@ class InvoiceRepository{
         category: invoicesMaps[i]['category'] as String,
         type: invoicesMaps[i]['type'] as String,
         amount: invoicesMaps[i]['amount'] as double,
+        user_id: invoicesMaps[i]['user_id'] as int
       );
     });
 
@@ -196,6 +199,7 @@ class InvoiceRepository{
         category: invoicesMaps[i]['category'] as String,
         type: invoicesMaps[i]['type'] as String,
         amount: invoicesMaps[i]['amount'] as double,
+        user_id: invoicesMaps[i]['user_id'] as int
       );
     });
 
@@ -216,6 +220,7 @@ class InvoiceRepository{
     category: invoicesMaps.first['category'] as String,
     type: invoicesMaps.first['type'] as String,
     amount: invoicesMaps.first['amount'] as double,
+    user_id: invoicesMaps.first['user_id'] as int
   );
 
   }
@@ -234,9 +239,10 @@ class InvoiceRepository{
           'category': category as String,
           'type': type as String,
           'amount': amount as double,
+          'user_id': user_id as int
           
         } in invoicesMaps)
-      Invoice(id: id, invoice: invoice, date: date, category: category, type: type, amount: amount),
+      Invoice(id: id, invoice: invoice, date: date, category: category, type: type, amount: amount, user_id: user_id),
   ];
 }
 

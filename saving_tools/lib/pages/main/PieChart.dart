@@ -55,6 +55,9 @@ class _PieChartState extends State<PieChart> {
       future: getData(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
+          if(snapshot.data!.isEmpty) {
+            return Container(child:Text("Any invoice has been added yet, add an invoice to see the pie chart", textAlign: TextAlign.center,style: TextStyle(fontSize: 20)));
+          }
           return pie_chart.PieChart(dataMap: snapshot.data!);
         } else {
           return CircularProgressIndicator();

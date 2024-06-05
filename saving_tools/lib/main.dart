@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:saving_tools/Entities/User.dart';
+import 'package:saving_tools/Repositories/UserRepository.dart';
 import 'package:saving_tools/Services/InvoiceService.dart';
 import 'package:saving_tools/databaseConfig.dart';
 import 'package:saving_tools/pages/Invoices/AddInvoice/AddInvoice.dart';
@@ -11,6 +13,7 @@ void main() async {
   //Singleton Service
 
   InvoiceService.database = await dbConfig.getDatabase();
+  
   runApp(MyApp());
 }
 

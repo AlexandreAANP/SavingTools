@@ -11,10 +11,7 @@ class ListInvoice extends StatelessWidget{
   final invoiceListTableSettingsKey = GlobalKey<InvoiceListTableSettingsState>();
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
-      home: Scaffold(
+    return Scaffold(
         backgroundColor: const Color.fromARGB(255, 192, 241, 208),
         appBar: ApplicationBar(),
         body: Column(
@@ -57,8 +54,7 @@ class ListInvoice extends StatelessWidget{
           ],
         ),
         bottomNavigationBar: NavBar(),
-      ),
-    );
+      );
   }
   
 }

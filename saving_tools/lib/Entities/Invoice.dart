@@ -5,6 +5,7 @@ class Invoice {
   final String? category;
   final String? type;
   final double? amount;
+  final int? user_id;
 
   const Invoice({
     int? this.id,
@@ -13,6 +14,7 @@ class Invoice {
     required this.category,
     required this.type,
     required this.amount,
+    required this.user_id,
   });
 
 
@@ -23,6 +25,7 @@ class Invoice {
       'category': category,
       'type': type,
       'amount': amount,
+      'user_id': user_id,
     };
   }
 
