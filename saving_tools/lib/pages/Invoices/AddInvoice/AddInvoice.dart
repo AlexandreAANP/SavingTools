@@ -3,6 +3,7 @@ import 'package:saving_tools/appbar/ApplicationBar.dart';
 import 'package:saving_tools/pages/Invoices/AddInvoice/AddInvoiceForm.dart';
 import 'package:saving_tools/pages/Invoices/AddInvoice/FormParts/InvoiceType.dart';
 import 'package:saving_tools/pages/Invoices/AddInvoice/FormParts/InvoicesColors.dart';
+import 'package:saving_tools/sharedWidgets/Drawer.dart';
 import 'package:saving_tools/sharedWidgets/NavBar.dart';
 import 'package:saving_tools/sharedWidgets/ToolBarMessages.dart';
 
@@ -41,7 +42,8 @@ class AddInvoiceState extends State<AddInvoice> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: InvoiceColors.GetLightColor(invoiceType),
-      appBar: ApplicationBar(),
+      appBar: ApplicationBar(context: context,),
+      drawer: MainDrawer(context: context,),
       body: Column(
         children: [
           ToolBarMessages(),

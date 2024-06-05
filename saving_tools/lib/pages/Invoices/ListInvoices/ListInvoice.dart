@@ -3,6 +3,7 @@ import 'package:saving_tools/appbar/ApplicationBar.dart';
 import 'package:saving_tools/pages/Invoices/ListInvoices/ListInvoiceParts/InvoiceListTable.dart';
 import 'package:saving_tools/pages/Invoices/ListInvoices/ListInvoiceParts/InvoiceListTableHeader.dart';
 import 'package:saving_tools/pages/Invoices/ListInvoices/ListInvoiceParts/InvoiceListTableSettings.dart';
+import 'package:saving_tools/sharedWidgets/Drawer.dart';
 import 'package:saving_tools/sharedWidgets/NavBar.dart';
 import 'package:saving_tools/sharedWidgets/ToolBarMessages.dart';
 
@@ -13,7 +14,8 @@ class ListInvoice extends StatelessWidget{
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: const Color.fromARGB(255, 192, 241, 208),
-        appBar: ApplicationBar(),
+        appBar: ApplicationBar(context: context,),
+        drawer: MainDrawer(context: context,),
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,

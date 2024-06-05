@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class ApplicationBar extends AppBar {
-  ApplicationBar({Key? key})
+  ApplicationBar({Key? key, BuildContext? context})
       : super(
           title: Center(
             child: Text(
@@ -15,10 +15,25 @@ class ApplicationBar extends AppBar {
             ),
           backgroundColor: const Color.fromARGB(255, 0, 170, 65),
           elevation: 1,
-          leading: Icon(
-            Icons.menu,
-            color: Colors.white,
+          leading: Builder(
+            builder: (context) => IconButton(
+              icon: Icon(
+                Icons.menu,
+                color: Colors.white,
+                ),
+              onPressed: () {
+                            print("d");
+                            Scaffold.of(context).openDrawer();},
             ),
+          ),
+          // leading: IconButton(
+          //   icon: Icon(
+          //           Icons.menu,
+          //           color: Colors.white,
+          //           ),
+          //   onPressed: Scaffold.of(context!).openDrawer
+            
+          //   ),
           actions: [
             IconButton(
               icon: Icon(

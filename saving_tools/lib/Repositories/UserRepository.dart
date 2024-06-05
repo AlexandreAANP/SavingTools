@@ -17,8 +17,11 @@ class UserRepository{
     );
   }
 
-  Future<User> getUser() async {
-    final List<Map<String, dynamic>> maps = await database.query(table);
+  Future<User> getUser(String? username) async {
+    final List<Map<String, dynamic>> maps = await database.query(
+      table,
+      where: 'username = ?',
+      whereArgs: [username],);
 
     return User.fromMap(maps.first);
   }
