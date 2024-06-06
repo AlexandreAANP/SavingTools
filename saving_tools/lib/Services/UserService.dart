@@ -14,6 +14,13 @@ class UserService{
     _userRepository = UserRepository(databaseName);
   }
 
+  static final UserService _instance = UserService._privateConstructor(database!);
+
+  factory UserService() {
+
+    return _instance;
+  }
+
   Future<UserDTO> registerUser({required String username, required String email, required String password}) async {
     User user = User(
       username: username,

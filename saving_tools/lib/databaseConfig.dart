@@ -25,13 +25,8 @@ class databaseConfig {
       // Run the CREATE TABLE statement on the database.
       
       db.execute("CREATE TABLE Invoice(id INTEGER PRIMARY KEY, invoice TEXT, date TEXT, category TEXT, type TEXT, amount REAL, user_id INTEGER NOT NULL DEFAULT 0)");
-      db.execute(
-        """CREATE TABLE User(
-                id INTEGER PRIMARY KEY,
-                username UNIQUE TEXT,
-                email TEXT,
-                password TEXT)""",  
-      );
+      db.execute("CREATE TABLE User(id INTEGER PRIMARY KEY,username TEXT UNIQUE,email TEXT,password TEXT)");
+      db.execute("CREATE TABLE Goal(id INTEGER PRIMARY KEY, description TEXT, date TEXT, percent REAL, isCompleted BOOL, isExpired BOOL, user_id INTEGER NOT NULL DEFAULT 0)");
       db.insert("User", {"id": 0, "username": "default", "email": "default", "password": "default"});
       
     },

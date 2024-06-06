@@ -2,6 +2,7 @@ import 'package:saving_tools/Entities/Invoice.dart';
 import 'package:saving_tools/Repositories/SearchTools/OrderBy.dart';
 import 'package:saving_tools/Repositories/SearchTools/Search.dart';
 import 'package:saving_tools/Repositories/SearchTools/SearchLike.dart';
+import 'package:saving_tools/Repositories/SearchTools/SearchUtils.dart';
 import 'package:sqflite/sqflite.dart';
 
 class InvoiceRepository{
@@ -23,49 +24,14 @@ class InvoiceRepository{
 
   }
 
-  String? getWhereSearchString({Searchlike? searchLike, Search? searchEquals, required bool searchEqualFirst}) {
-    String? whereString = "";
-    if(searchEqualFirst){
-      if(searchEquals != null){
-        whereString += searchEquals.getSearchString() ?? "";
-      } 
-      else if(searchLike != null){
-        whereString += searchLike.getSearchString() ?? "";
-      }
-      whereString = whereString == "" ? null : whereString;
-    }
-    else{
-      if(searchLike != null){
-        whereString += searchLike.getSearchString() ?? "";
-      } 
-      else if(searchEquals != null){
-        whereString += searchEquals.getSearchString() ?? "";
-      }
-      whereString = whereString == "" ? null : whereString;
-    }
-    return whereString;
-  }
   
-  List<String>? getWhereArguments({Searchlike? searchLike, Search? searchEquals, required bool searchEqualFirst}){
-    List<String>? whereArgs = [];
-    if(searchEqualFirst){
-      if(searchEquals != null){
-        whereArgs.addAll(searchEquals.getWhereArgs() ?? []);
-      } 
-      else if(searchLike != null){
-        whereArgs.addAll(searchLike.getWhereArgs() ?? []);
-      }
-    }
-
-    return whereArgs.isEmpty ? null : whereArgs;
-  }
 
 
   Future<List<Invoice>> getAllSearchedInvoices({Searchlike? searchLike, Search? searchEquals, bool searchEqualFirst = true, OrderBy? order, int? limit, int? offset}) async {
 
-    String? whereString = getWhereSearchString(searchLike: searchLike, searchEquals: searchEquals, searchEqualFirst: searchEqualFirst);
+    String? whereString = SearchUtils.getWhereSearchString(searchLike: searchLike, searchEquals: searchEquals, searchEqualFirst: searchEqualFirst);
     
-    List<String>? whereArgs = getWhereArguments(searchLike: searchLike, searchEquals: searchEquals, searchEqualFirst: searchEqualFirst);
+    List<String>? whereArgs = SearchUtils.getWhereArguments(searchLike: searchLike, searchEquals: searchEquals, searchEqualFirst: searchEqualFirst);
 
     final List<Map<String, Object?>> invoicesMaps = await this.database.query(
       table,
@@ -91,8 +57,8 @@ class InvoiceRepository{
   }
 
   Future<int> getTotalInvoices({Searchlike? searchLike, Search? searchEquals, bool searchEqualFirst = true}) async {
-    String? whereString = getWhereSearchString(searchLike: searchLike, searchEquals: searchEquals, searchEqualFirst: searchEqualFirst);
-    List<String>? whereArgs = getWhereArguments(searchLike: searchLike, searchEquals: searchEquals, searchEqualFirst: searchEqualFirst);
+    String? whereString = SearchUtils.getWhereSearchString(searchLike: searchLike, searchEquals: searchEquals, searchEqualFirst: searchEqualFirst);
+    List<String>? whereArgs = SearchUtils.getWhereArguments(searchLike: searchLike, searchEquals: searchEquals, searchEqualFirst: searchEqualFirst);
 
     final List<Map<String, Object?>> invoicesMaps = await this.database.query(
       table,
