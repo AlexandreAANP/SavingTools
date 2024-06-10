@@ -8,8 +8,11 @@ import 'package:saving_tools/databaseConfig.dart';
 import 'package:saving_tools/pages/Invoices/AddInvoice/AddInvoice.dart';
 import 'package:saving_tools/pages/Invoices/ListInvoices/ListInvoice.dart';
 import 'package:saving_tools/pages/Login/Login.dart';
+import 'package:saving_tools/pages/Login/Register.dart';
+import 'package:saving_tools/pages/goals/MainGoals.dart';
 import 'package:saving_tools/pages/main/MainPage.dart';
 import 'package:saving_tools/pages/profile/MainProfile.dart';
+import 'package:saving_tools/pages/statistics/MainStatistics.dart';
 import 'package:sqflite/sqflite.dart';
 
 
@@ -43,6 +46,9 @@ class MyApp extends StatelessWidget {
         '/listInvoice': (context) => ListInvoice(),
         "/profile": (context) => MainProfile(),
         "/login": (context) => Login(),
+        "/register": (context) => Register(),
+        "/goals": (context) => MainGoals(),
+        "/statistics": (context) => MainStatistics(),
         //TODO ADD MORE ROUTES
       },
     );

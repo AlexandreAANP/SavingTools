@@ -1,10 +1,13 @@
 import 'package:saving_tools/DTOs/InvoiceDTO.dart';
 import 'package:saving_tools/DTOs/Mapper.dart';
+import 'package:saving_tools/DTOs/UserDTO.dart';
 import 'package:saving_tools/Entities/Invoice.dart';
 import 'package:saving_tools/Repositories/InvoiceRepository.dart';
 import 'package:saving_tools/Repositories/SearchTools/OrderBy.dart';
 import 'package:saving_tools/Repositories/SearchTools/Search.dart';
 import 'package:saving_tools/Repositories/SearchTools/SearchLike.dart';
+import 'package:saving_tools/Repositories/WhoIs.dart';
+import 'package:saving_tools/Services/UserService.dart';
 import 'package:saving_tools/pages/Invoices/AddInvoice/FormParts/InvoiceType.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -34,22 +37,40 @@ class InvoiceService {
     required double Amount
   }
   ) async {
+
+    String actualUsername =  await WhoIs.getActualUsername();
+    UserDTO user = await UserService().getUser(actualUsername);
     Invoice invoice = Invoice(
       invoice: invoiceName,
       date: "${Date.day}/${Date.month}/${Date.year}",
       category: Category,
       type: Type.name,
       amount: Type == InvoiceTypeEnum.credit ? Amount : -Amount,
-      user_id: 0
+      user_id: user.id
     );
     await _invoiceRepository!.insertInvoice(invoice);
-    print("Invoice inserted");
+
   }
 
+  Future<Search> getSearchLikeWithActualUser({Search? search}) async {
+    UserDTO actualUser = await UserService().getUser(await WhoIs.getActualUsername());
+    if(search != null && search.fields!.isNotEmpty){
+      search.fields!['user_id'] = actualUser.id.toString();
+      search = Search(search.fields!);
+    }
+    else{
+      search = Search({
+        'user_id': actualUser.id.toString()
+      });
+    }
+    return search;
+  }
 
-  Future<Map<String,dynamic>> ListAllSearch({Searchlike? searchlike, int? limit, int? offset, OrderBy? orderBy}) async {
-    List<Invoice> invoice =  await _invoiceRepository!.getAllSearchedInvoices(searchLike: searchlike, limit: limit, offset: offset, order: orderBy);
-    int total = await _invoiceRepository!.getTotalInvoices(searchLike: searchlike);
+  Future<Map<String,dynamic>> ListAllSearch({Searchlike? searchlike,Search? search, int? limit, int? offset, OrderBy? orderBy}) async {
+    Search searchEquals = await getSearchLikeWithActualUser(search: search);
+    List<Invoice> invoice =  await _invoiceRepository!.getAllSearchedInvoices(searchLike: searchlike, searchEquals: searchEquals, limit: limit, offset: offset, order: orderBy);
+
+    int total = await _invoiceRepository!.getTotalInvoices(searchLike: searchlike, searchEquals: searchEquals);
     List<InvoiceDTO> invoiceDTO = [];
     invoice.forEach((element) {
       invoiceDTO.add(Mapper.InvoiceToInvoiceDTO(element));
@@ -57,10 +78,14 @@ class InvoiceService {
     return {"invoices": invoiceDTO.toList(), "total": total};
   }
 
+  
 
   Future<Map<String,double>> getInvoicesPercentage({int? limit}) async {
+
+    UserDTO actualUser = await UserService().getUser(await WhoIs.getActualUsername());
     Map<String, double> percentage = {};
-    Map<String, double> invoices = await _invoiceRepository!.getExpensesByCategory();
+    Map<String, double> invoices = await _invoiceRepository!.getExpensesByCategory(user_id: actualUser.id);
+
     double total = invoices.entries.fold(0, (previousValue, element) => previousValue + element.value);
     invoices.forEach((key, value) {
       percentage[key] = (value/total) * 100;
@@ -100,8 +125,10 @@ class InvoiceService {
     Map<String, String> fields = {
       'date': 'DESC',
     };
-    
-    List<Invoice> invoices = await _invoiceRepository!.getAllSearchedInvoices(order: OrderBy(fields), limit: limit);
+
+    Search searchEquals = await getSearchLikeWithActualUser();
+
+    List<Invoice> invoices = await _invoiceRepository!.getAllSearchedInvoices(searchEquals: searchEquals, order: OrderBy(fields), limit: limit);
     List<InvoiceDTO> invoicesDTO = [];
     invoices.forEach((element) {
       invoicesDTO.add(Mapper.InvoiceToInvoiceDTO(element));
@@ -117,9 +144,10 @@ class InvoiceService {
     Map<String, String> search = {
       'type': 'debit',
     };
+    Search searchEquals = await getSearchLikeWithActualUser(search: Search(search));
     List<Invoice> invoices = await _invoiceRepository!.getAllSearchedInvoices(
                                                           order: OrderBy(fields),
-                                                          searchEquals: Search(search),
+                                                          searchEquals: searchEquals,
                                                           limit: limit);
     List<InvoiceDTO> invoicesDTO = [];
     invoices.forEach((element) {
@@ -137,9 +165,10 @@ class InvoiceService {
     Map<String, String> search = {
       'type': 'credit',
     };
+    Search searchEquals = await getSearchLikeWithActualUser(search: Search(search));
     List<Invoice> invoices = await _invoiceRepository!.getAllSearchedInvoices(
                                                           order: OrderBy(fields),
-                                                          searchEquals: Search(search),
+                                                          searchEquals: searchEquals,
                                                           limit: limit);
     List<InvoiceDTO> invoicesDTO = [];
     invoices.forEach((element) {
@@ -150,7 +179,8 @@ class InvoiceService {
 
 
   Future<List<InvoiceDTO>> ListAllInvoices({int? limit}) async{
-    List<Invoice> invoices = await _invoiceRepository!.getAllInvoices(limit: limit);
+    UserDTO actualUser = await UserService().getUser(await WhoIs.getActualUsername());
+    List<Invoice> invoices = await _invoiceRepository!.getAllInvoices(limit: limit, user_id: actualUser.id);
     List<InvoiceDTO> invoicesDTO = [];
     invoices.forEach((element) {
       invoicesDTO.add(Mapper.InvoiceToInvoiceDTO(element));
@@ -164,7 +194,8 @@ class InvoiceService {
   }
 
   Future<void> DeleteAllInvoices() async {
-    for(Invoice i in await _invoiceRepository!.getAllInvoices()){
+    UserDTO actualUser = await UserService().getUser(await WhoIs.getActualUsername());
+    for(Invoice i in await _invoiceRepository!.getAllInvoices(user_id: actualUser.id)){
       await _invoiceRepository!.deleteInvoice(i.id!);
     }
   }

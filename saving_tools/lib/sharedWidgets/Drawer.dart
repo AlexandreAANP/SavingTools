@@ -90,6 +90,42 @@ class MainDrawer extends Drawer{
                                           Navigator.popAndPushNamed(context, '/profile');
                                       },
                                     ),
+                                    ListTile(
+                                      contentPadding: EdgeInsets.only(left: 20),
+                                      leading: Icon(Icons.sports_score, color: Colors.white),
+                                        title: Text(
+                                        'Goals',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 25,
+                                          
+                                        ),
+                                        ),
+                                      onTap: () {
+                                         if (ModalRoute.of(context)!.settings.name == '/goals') {
+                                            return;
+                                          }
+                                          Navigator.popAndPushNamed(context, '/goals');
+                                      },
+                                    ),
+                                    ListTile(
+                                      contentPadding: EdgeInsets.only(left: 20),
+                                      leading: Icon(Icons.insights, color: Colors.white),
+                                        title: Text(
+                                        'Statistics',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 25,
+                                          
+                                        ),
+                                        ),
+                                      onTap: () {
+                                         if (ModalRoute.of(context)!.settings.name == '/statistics') {
+                                            return;
+                                          }
+                                          Navigator.popAndPushNamed(context, '/statistics');
+                                        }
+                                    ),
                                     
                                   ],
                                 ),

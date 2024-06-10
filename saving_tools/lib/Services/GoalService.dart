@@ -1,5 +1,10 @@
+import 'package:saving_tools/DTOs/GoalDTO.dart';
+import 'package:saving_tools/DTOs/Mapper.dart';
+import 'package:saving_tools/DTOs/UserDTO.dart';
 import 'package:saving_tools/Entities/Goal.dart';
 import 'package:saving_tools/Repositories/GoalRepository.dart';
+import 'package:saving_tools/Repositories/WhoIs.dart';
+import 'package:saving_tools/Services/UserService.dart';
 import 'package:sqflite/sqflite.dart';
 
 class GoalService {
@@ -20,7 +25,10 @@ class GoalService {
   Future<void> addGoal({
     required String description,
     required DateTime date,
-    required double percent,
+    double? percent,
+    required double amount,
+    required double distributionPercentage,
+    required int rank,
     int? userId,
   }
   ) async {
@@ -29,6 +37,10 @@ class GoalService {
       description: description,
       date: dateStr,
       percent: percent,
+      amount: amount,
+      distributionPercentage: distributionPercentage,
+      rank: rank,
+
       userId: userId ?? 0,
     );
     
@@ -36,8 +48,19 @@ class GoalService {
   }
 
 
-  Future<List<Goal>> getGoals(int? limit) async {
-    return await _goalRepository!.getGoals();
+  Future<List<GoalDTO>> getGoals(int? limit) async {
+    UserDTO user = await UserService().getUser(await WhoIs.getActualUsername());
+    List<Goal> goals = await _goalRepository!.getGoals(limit: limit, userId: user.id);
+    List<GoalDTO> goalsDTO = [];
+    for (Goal goal in goals) {
+      goalsDTO.add(Mapper.GoalToGoalDTO(goal));
+      
+    }
+    return goalsDTO;
+  }
+
+  Future<void> deleteGoal(int goalID) async {
+    await _goalRepository!.deleteGoal(goalID);
   }
 
   Future<void> changePercentage(Goal goal, double percent) async {

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:saving_tools/Repositories/WhoIs.dart';
 
 class ApplicationBar extends AppBar {
   ApplicationBar({Key? key, BuildContext? context})
@@ -22,8 +23,8 @@ class ApplicationBar extends AppBar {
                 color: Colors.white,
                 ),
               onPressed: () {
-                            print("d");
-                            Scaffold.of(context).openDrawer();},
+                            Scaffold.of(context).openDrawer();
+                            },
             ),
           ),
           // leading: IconButton(
@@ -40,7 +41,10 @@ class ApplicationBar extends AppBar {
                 Icons.logout,
                 color: Colors.white,
                 ),
-              onPressed: () {},
+              onPressed: () {
+                WhoIs.setActualUsername("default");
+                Navigator.pushNamed(context!, '/login');
+              },
             ),
           ]
         ); 

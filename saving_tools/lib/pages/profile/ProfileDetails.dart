@@ -53,7 +53,7 @@ class ProfileDetailsState extends State<ProfileDetails> {
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
                         return Text(
-                          snapshot.data!.email,
+                          snapshot.data!.username,
                           style: TextStyle(
                             color: const Color.fromARGB(255, 9, 102, 45),
                             fontSize: 20,
@@ -136,39 +136,56 @@ class ProfileDetailsState extends State<ProfileDetails> {
     }
 
     Widget LogOut() {
-      return ElevatedButton(
-        onPressed: () {
-          if (ModalRoute.of(context)!.settings.name == '/login') {
-          return;
-        }
-        Navigator.pushNamed(context, '/login');
-        },
-        child: Text(
-          'Log Out',
-           style: TextStyle(
-              color: const Color.fromARGB(255, 9, 102, 45),
-              fontSize: 20,
-            ),
-        ),
-      );
+      return TextButton(
+                  onPressed: () {
+                    WhoIs.setActualUsername("default");
+                    if (ModalRoute.of(context)!.settings.name != '/login')
+                        Navigator.of(context).popAndPushNamed("/login");
+                  },
+                  style: ButtonStyle(
+                      backgroundColor:
+                          WidgetStateProperty.all<Color>(Color.fromARGB(255, 0, 170, 65)),
+                      padding: WidgetStateProperty.all<EdgeInsetsGeometry>(
+                          EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10)),
+                      shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
+                      ))),
+                  child: Text(
+                    "Logout",
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: "Roboto"),
+                  ),
+            );
     }
 
     Widget SignIn() {
 
-      return ElevatedButton(
-        onPressed: () {
-          if (ModalRoute.of(context)!.settings.name == '/login') {
-          return;
-        }
-        Navigator.pushNamed(context, '/login');
-        },
-        child: Text(
-          'Sign In',
-           style: TextStyle(
-              color: const Color.fromARGB(255, 9, 102, 45),
-              fontSize: 20,
-            ),
-        ),
-      );
+      return TextButton(
+                onPressed: () {
+                  if (ModalRoute.of(context)!.settings.name != '/login')
+                      Navigator.of(context).pushNamed("/login"); 
+                },
+                style: ButtonStyle(
+                    backgroundColor:
+                        WidgetStateProperty.all<Color>(Color.fromARGB(255, 0, 170, 65)),
+                    padding: WidgetStateProperty.all<EdgeInsetsGeometry>(
+                        EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10)),
+                    shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                        RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ))),
+                child: Text(
+                  "Sign In",
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: "Roboto"),
+                ),
+    );
     }
 }

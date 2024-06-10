@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:saving_tools/appbar/ApplicationBar.dart';
-import 'package:saving_tools/pages/profile/MainGoals.dart';
+import 'package:saving_tools/pages/profile/ShortMainGoals.dart';
 import 'package:saving_tools/pages/profile/ProfileDetails.dart';
+import 'package:saving_tools/pages/profile/Statistics.dart';
 import 'package:saving_tools/sharedWidgets/Drawer.dart';
 import 'package:saving_tools/sharedWidgets/NavBar.dart';
 import 'package:saving_tools/sharedWidgets/ToolBarMessages.dart';
@@ -50,7 +51,8 @@ class MainProfile extends StatelessWidget {
                                     ),
                                 
                                 ProfileDetails(),
-                                MainGoals(),
+                                ShortMainGoals(),
+                                Statistics()
                                 ]
                                ),
                                

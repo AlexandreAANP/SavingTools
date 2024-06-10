@@ -83,7 +83,9 @@ class AddInvoiceState extends State<AddInvoice> {
                               )
                             ),
                             AddInvoiceForm(key: addInvoiceFormKey, Scaffold_key: addInvoiceKey),
-          ])))
+          ])
+          )
+          )
         ],
       ),
       bottomNavigationBar: NavBar(),

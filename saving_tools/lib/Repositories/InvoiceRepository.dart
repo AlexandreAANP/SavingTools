@@ -3,6 +3,7 @@ import 'package:saving_tools/Repositories/SearchTools/OrderBy.dart';
 import 'package:saving_tools/Repositories/SearchTools/Search.dart';
 import 'package:saving_tools/Repositories/SearchTools/SearchLike.dart';
 import 'package:saving_tools/Repositories/SearchTools/SearchUtils.dart';
+import 'package:saving_tools/Repositories/WhoIs.dart';
 import 'package:sqflite/sqflite.dart';
 
 class InvoiceRepository{
@@ -15,7 +16,7 @@ class InvoiceRepository{
 
 
   Future<void> insertInvoice(Invoice invoice) async {
-
+  
   await this.database.insert(
     table,
     invoice.toMap(),
@@ -29,10 +30,9 @@ class InvoiceRepository{
 
   Future<List<Invoice>> getAllSearchedInvoices({Searchlike? searchLike, Search? searchEquals, bool searchEqualFirst = true, OrderBy? order, int? limit, int? offset}) async {
 
-    String? whereString = SearchUtils.getWhereSearchString(searchLike: searchLike, searchEquals: searchEquals, searchEqualFirst: searchEqualFirst);
+    String? whereString = SearchUtils.getWhereSearchString(searchLike: searchLike, searchEquals: searchEquals);
     
-    List<String>? whereArgs = SearchUtils.getWhereArguments(searchLike: searchLike, searchEquals: searchEquals, searchEqualFirst: searchEqualFirst);
-
+    List<String>? whereArgs = SearchUtils.getWhereArguments(searchLike: searchLike, searchEquals: searchEquals);
     final List<Map<String, Object?>> invoicesMaps = await this.database.query(
       table,
       where: whereString,
@@ -57,9 +57,10 @@ class InvoiceRepository{
   }
 
   Future<int> getTotalInvoices({Searchlike? searchLike, Search? searchEquals, bool searchEqualFirst = true}) async {
-    String? whereString = SearchUtils.getWhereSearchString(searchLike: searchLike, searchEquals: searchEquals, searchEqualFirst: searchEqualFirst);
-    List<String>? whereArgs = SearchUtils.getWhereArguments(searchLike: searchLike, searchEquals: searchEquals, searchEqualFirst: searchEqualFirst);
-
+    String? whereString = SearchUtils.getWhereSearchString(searchLike: searchLike, searchEquals: searchEquals);
+    List<String>? whereArgs = SearchUtils.getWhereArguments(searchLike: searchLike, searchEquals: searchEquals);
+    print(whereString);
+    print(whereArgs);
     final List<Map<String, Object?>> invoicesMaps = await this.database.query(
       table,
       where: whereString,
@@ -70,12 +71,12 @@ class InvoiceRepository{
   }
 
 
-  Future<Map<String,double>> getExpensesByCategory() async {
+  Future<Map<String,double>> getExpensesByCategory({int user_id = 0}) async {
     final List<Map<String, Object?>> invoicesMaps = await this.database.query(
       table,
       columns: ['category', 'amount'],
-      where: 'type = ?',
-      whereArgs: ['debit']
+      where: 'user_id = ? AND type = ?',
+      whereArgs: [user_id, 'debit']
     );
 
     Map<String, double> expenses = {};
@@ -191,10 +192,10 @@ class InvoiceRepository{
 
   }
 
-  Future<List<Invoice>> getAllInvoices({int? limit}) async {
+  Future<List<Invoice>> getAllInvoices({int? limit, int? user_id}) async {
 
   // Query the table for all the invoice.
-  final List<Map<String, Object?>> invoicesMaps = await this.database.query(table, limit: limit);
+  final List<Map<String, Object?>> invoicesMaps = await this.database.query(table, limit: limit, where: 'user_id = ?', whereArgs: [user_id]);
 
   // Convert the list of each invoices's fields into a list of `invoices` objects.
   return [

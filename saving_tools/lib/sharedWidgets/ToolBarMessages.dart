@@ -93,7 +93,6 @@ class ToolBarMessagesState extends State<ToolBarMessages>{
     while(true){
       await Future.delayed(Duration(seconds: 5));
       if(!mounted) break;
-      print("Hascode: ${context.hashCode}");
       if(context.mounted)
         SlideToolBar();
       else

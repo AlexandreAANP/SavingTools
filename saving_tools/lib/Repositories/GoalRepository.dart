@@ -25,15 +25,14 @@ class GoalRepository{
   Future<List<Goal>> searchGoals({
                             Searchlike? searchLike,
                             Search? searchEquals,
-                            bool searchEqualFirst = true,
                             OrderBy? order,
                             int? limit,
                             int? offset
                             }) async {
 
-    String? whereString = SearchUtils.getWhereSearchString(searchLike: searchLike, searchEquals: searchEquals, searchEqualFirst: searchEqualFirst);
+    String? whereString = SearchUtils.getWhereSearchString(searchLike: searchLike, searchEquals: searchEquals);
     
-    List<String>? whereArgs = SearchUtils.getWhereArguments(searchLike: searchLike, searchEquals: searchEquals, searchEqualFirst: searchEqualFirst);  
+    List<String>? whereArgs = SearchUtils.getWhereArguments(searchLike: searchLike, searchEquals: searchEquals);  
 
     final List<Map<String, dynamic>> maps = await database.query(
                                                     table,
@@ -54,8 +53,9 @@ class GoalRepository{
   }
 
 
-  Future<List<Goal>> getGoals() async {
-    final List<Map<String, dynamic>> maps = await database.query(table);
+  Future<List<Goal>> getGoals({int? limit, int? userId = 0}) async {
+
+    final List<Map<String, dynamic>> maps = await database.query(table, limit: limit, where: 'user_id = ?', whereArgs: [userId]);
 
     return List.generate(maps.length, (i) {
       return Goal(
@@ -63,6 +63,10 @@ class GoalRepository{
         description: maps[i]['description'],
         date: maps[i]['date'],
         percent: maps[i]['percent'],
+        amount: maps[i]['amount'],
+        isCompleted: maps[i]['isCompleted'],
+        isExpired: maps[i]['isExpired'],
+        userId: maps[i]['user_id'],
       );
     });
   }

@@ -168,7 +168,7 @@ class _ShortInvoiceTableState extends State<ShortInvoiceTable> {
       onPressed: () {
         
         if (ModalRoute.of(context)!.settings.name != '/listInvoice')
-            Navigator.of(context).popAndPushNamed("/listInvoice");
+            Navigator.of(context).pushNamed("/listInvoice");
         
       },
       style: ButtonStyle(
@@ -188,7 +188,9 @@ class _ShortInvoiceTableState extends State<ShortInvoiceTable> {
             fontWeight: FontWeight.bold,
             fontFamily: "Roboto"),
       ),
-    )));
+    ))
+    
+    );
   }
 
 }
