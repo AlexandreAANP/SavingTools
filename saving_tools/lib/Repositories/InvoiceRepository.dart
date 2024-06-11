@@ -59,8 +59,6 @@ class InvoiceRepository{
   Future<int> getTotalInvoices({Searchlike? searchLike, Search? searchEquals, bool searchEqualFirst = true}) async {
     String? whereString = SearchUtils.getWhereSearchString(searchLike: searchLike, searchEquals: searchEquals);
     List<String>? whereArgs = SearchUtils.getWhereArguments(searchLike: searchLike, searchEquals: searchEquals);
-    print(whereString);
-    print(whereArgs);
     final List<Map<String, Object?>> invoicesMaps = await this.database.query(
       table,
       where: whereString,

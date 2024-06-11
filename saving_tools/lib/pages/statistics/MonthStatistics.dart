@@ -144,7 +144,7 @@ String? totalEarned = "0";
                                                   builder: (BuildContext context, AsyncSnapshot<Map<String, dynamic>> snapshot) {
                                                     if (snapshot.hasData) {
                                                       return Text(
-                                                        "Expended: ${snapshot.data!["totalExpended"]}€",
+                                                        "Expended: ${formatNumber(snapshot.data!["totalExpended"])}€",
                                                         maxLines: 1,
                                                         overflow: TextOverflow.ellipsis,
                                                         style: TextStyle(
@@ -173,7 +173,7 @@ String? totalEarned = "0";
                                             builder: (BuildContext context, AsyncSnapshot<Map<String, dynamic>> snapshot) {
                                                     if (snapshot.hasData) {
                                                       return Text(
-                                                        "Earned: ${snapshot.data!["totalEarned"]}€",
+                                                        "Earned: ${formatNumber(snapshot.data!["totalEarned"])}€",
                                                         maxLines: 1,
                                                         overflow: TextOverflow.ellipsis,
                                                         style: TextStyle(
@@ -206,6 +206,17 @@ String? totalEarned = "0";
       )
     ],
    );
+  }
+
+  String formatNumber(double number){
+
+    if (number < 1000){
+      return number.toString();
+    }
+    if (number < 1000000){
+      return (number/1000).toStringAsFixed(2) + "K";
+    }
+    return (number/1000000).toStringAsFixed(2) + "M";
   }
 
   Future<Map<String,dynamic>> getExpended() async {

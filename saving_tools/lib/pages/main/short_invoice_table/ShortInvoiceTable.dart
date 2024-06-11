@@ -150,7 +150,7 @@ class _ShortInvoiceTableState extends State<ShortInvoiceTable> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     InvoiceTableHeaders(headers).headers,
-                    ...InvoiceTableRows(context, snapshot.data!, filter: Filter.all).rows,
+                    ...InvoiceTableRows(context, snapshot.data ?? Map<InvoiceDTO, List<int>>(), filter: Filter.all).rows,
                   ],
                 ));
           }

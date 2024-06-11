@@ -31,7 +31,7 @@ class StatisticsService {
       double creditTotalAmount = 0;
 
       for (InvoiceDTO invoice in creditInvoices) {
-        print(invoice.type);
+
         creditTotalAmount += invoice.amount ?? 0;
       }
       return [debitTotalAmount, creditTotalAmount];

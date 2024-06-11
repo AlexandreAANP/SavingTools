@@ -27,7 +27,7 @@ class _AddGoalState extends State<AddGoal> {
   TextEditingController amountTextContent = TextEditingController();
   TextEditingController percentDestribution = TextEditingController(text:"100");
   bool isVisible = true;
-  int? rank = 1;
+  int rank = 1;
   DateTime date = DateTime.now();
   @override
   Widget build(BuildContext context) {
@@ -185,8 +185,6 @@ class _AddGoalState extends State<AddGoal> {
                           child: DatePicker(
                             onDateSelected: (date) {
                               setState(() {
-                                print(
-                                    "Date selected: ${date.day}/${date.month}/${date.year}");
                                 calendarTextContent.text = "${date.day}/${date.month}/${date.year}";
                               });
                             },
@@ -280,42 +278,52 @@ class _AddGoalState extends State<AddGoal> {
                         child: Container(
                           alignment: Alignment.center,
                           margin: EdgeInsets.only(left: 20, right: 20),
-                          child: DropdownButton<int>(
-                                value: rank,
-                                icon: Icon(Icons.keyboard_arrow_down,
-                                    color: Colors.black),
-                                elevation: 16,
-                                
-                                style:
-                                    TextStyle(
-                                      color: const Color.fromARGB(255, 9, 102, 45),
-                                      fontSize: 20,
+                          child: FutureBuilder<List<int>>(
+                            future: GetRanksAvailable(),
+                            builder: (context, snapshot) {
+                              if (snapshot.hasData) {
+                                return DropdownButton<int>(
+                                  value: snapshot.data![0],
+                                  icon: Icon(Icons.keyboard_arrow_down,
+                                      color: Colors.black),
+                                  elevation: 16,
+                                  
+                                  style:
+                                      TextStyle(
+                                        color: const Color.fromARGB(255, 9, 102, 45),
+                                        fontSize: 20,
+                                        
+                                        ),
+                                  underline: Container(
+                                    height: 2,
+                                    color:  Color.fromARGB(255, 9, 102, 45),
+                                  ),
+                                  onChanged: (int? value) {
+                                    // This is called when the user selects an item.
+                                    setState(() {
+                                      rank = value!;
                                       
-                                      ),
-                                underline: Container(
-                                  height: 2,
-                                  color:  Color.fromARGB(255, 9, 102, 45),
-                                ),
-                                onChanged: (int? value) {
-                                  // This is called when the user selects an item.
-                                  setState(() {
-                                    rank = value!;
-                                    
-                                  });
-                                },
-                                items: <int>[1, 2, 3, 4, 5]
-                                    .map<DropdownMenuItem<int>>((int value) {
-                                  return DropdownMenuItem<int>(
-                                    value: value,
-                                    child: Text(value.toString(),
-                                      textAlign: TextAlign.center, style: TextStyle(
-                                      color: const Color.fromARGB(255, 9, 102, 45),
-                                      fontSize: 20,
-                                    )
-                                    )
-                                  );
-                                }).toList(),
-                              )
+                                    });
+                                  },
+                                  items: snapshot.data!
+                                      .map<DropdownMenuItem<int>>((int value) {
+                                    return DropdownMenuItem<int>(
+                                      value: value,
+                                      child: Text(value.toString(),
+                                        textAlign: TextAlign.center, style: TextStyle(
+                                        color: const Color.fromARGB(255, 9, 102, 45),
+                                        fontSize: 20,
+                                      )
+                                      )
+                                    );
+                                  }).toList(),
+                                );
+                              } else if (snapshot.hasError) {
+                                return Text("${snapshot.error}");
+                              }
+                              return CircularProgressIndicator();
+                            },
+                          )
                         ),
                       )
                     ],
@@ -475,6 +483,9 @@ class _AddGoalState extends State<AddGoal> {
     );
   }
 
+  Future<List<int>> GetRanksAvailable() async{
+    return await GoalService().getRanksAvailable(); 
+  }
   String? amountValidator(String? value) {
     if (value == null || value.isEmpty) {
       return 'Please enter a description';
@@ -528,7 +539,7 @@ class _AddGoalState extends State<AddGoal> {
         date: date,
         amount: double.parse(amountTextContent.text),
         distributionPercentage: double.parse(percentDestribution.text),
-        rank: rank ?? 1
+        rank: rank
         );
       ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Added goal successfully!')));

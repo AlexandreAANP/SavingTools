@@ -37,7 +37,6 @@ class _ListInvoicePagintationState extends State<ListInvoicePagintation> {
   }
 
   void nextPage(){
-    print(getNumberOfGetPages());
     if(this.ListTableState.currentState!.pageIndex < getNumberOfGetPages()){
       this.ListTableState.currentState!.setState(() {
         this.ListTableState.currentState!.pageIndex++;

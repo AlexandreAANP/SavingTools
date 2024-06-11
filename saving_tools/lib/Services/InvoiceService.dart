@@ -3,10 +3,12 @@ import 'package:saving_tools/DTOs/Mapper.dart';
 import 'package:saving_tools/DTOs/UserDTO.dart';
 import 'package:saving_tools/Entities/Invoice.dart';
 import 'package:saving_tools/Repositories/InvoiceRepository.dart';
+import 'package:saving_tools/Repositories/ProfitMarginRepository.dart';
 import 'package:saving_tools/Repositories/SearchTools/OrderBy.dart';
 import 'package:saving_tools/Repositories/SearchTools/Search.dart';
 import 'package:saving_tools/Repositories/SearchTools/SearchLike.dart';
 import 'package:saving_tools/Repositories/WhoIs.dart';
+import 'package:saving_tools/Services/ProfiMarginService.dart';
 import 'package:saving_tools/Services/UserService.dart';
 import 'package:saving_tools/pages/Invoices/AddInvoice/FormParts/InvoiceType.dart';
 import 'package:sqflite/sqflite.dart';
@@ -15,10 +17,12 @@ import 'package:sqflite/sqflite.dart';
 class InvoiceService {
 
   InvoiceRepository? _invoiceRepository;
+  ProfitMarginService? _profitMarginService;
 
   static Database? database;
   InvoiceService._privateConstructor(Database databaseName) {
     _invoiceRepository = InvoiceRepository(databaseName);
+    _profitMarginService = ProfitMarginService();
   }
 
   static final InvoiceService _instance = InvoiceService._privateConstructor(database!);
@@ -49,6 +53,8 @@ class InvoiceService {
       user_id: user.id
     );
     await _invoiceRepository!.insertInvoice(invoice);
+    await _profitMarginService!.incrementProfitMargin(invoice.amount!);
+
 
   }
 

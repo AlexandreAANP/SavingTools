@@ -54,8 +54,6 @@ class _InvoiceDateState extends State<InvoiceDate> {
               child: DatePicker(
                 onDateSelected: (date) {
                   setState(() {
-                    print(
-                        "Date selected: ${date.day}/${date.month}/${date.year}");
                     controller.text = "${date.day}/${date.month}/${date.year}";
                   });
                 },

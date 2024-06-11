@@ -48,6 +48,12 @@ class GoalRepository{
         description: maps[i]['description'],
         date: maps[i]['date'],
         percent: maps[i]['percent'],
+        amount: maps[i]['amount'],
+        rank: maps[i]['rank'],
+        distributionPercentage: maps[i]['distributionPercentage'],
+        isCompleted: maps[i]['isCompleted'],
+        isExpired: maps[i]['isExpired'],
+        userId: maps[i]['user_id'],
       );
     });
   }
@@ -64,6 +70,8 @@ class GoalRepository{
         date: maps[i]['date'],
         percent: maps[i]['percent'],
         amount: maps[i]['amount'],
+        rank: maps[i]['rank'],
+        distributionPercentage: maps[i]['distributionPercentage'],
         isCompleted: maps[i]['isCompleted'],
         isExpired: maps[i]['isExpired'],
         userId: maps[i]['user_id'],

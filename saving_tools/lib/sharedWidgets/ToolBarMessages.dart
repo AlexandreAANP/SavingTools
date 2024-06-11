@@ -29,10 +29,12 @@ class ToolBarMessagesState extends State<ToolBarMessages>{
     }
     else{
       this.Messages = [
-        "Hello, World!",
         "Welcome to Saving Tools!",
         "This is a simple app to help you save money.",
-        "This is a simple app to help you save money.This is a simple app to help you save money."
+        "This application is still in development.",
+        "If you have any suggestions, please let us know.",
+        "Contact us at: a74526@ualg.pt",
+        "We hope you enjoy using our app!"
       ];
     }
     loopSlideToolBar();

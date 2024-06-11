@@ -48,7 +48,7 @@ class _StatisticsState extends State<Statistics> {
                           lineWidth: 15.0,
                           percent: snapshot.data!["debitPercent"],
                           center: new Text(
-                            "Expended ${snapshot.data!["totalExpended"]}€",
+                            "Debit ${snapshot.data!["totalExpended"]}€",
                             style:
                                 new TextStyle(fontWeight: FontWeight.bold, fontSize: 15.0),
                           ),
@@ -64,69 +64,83 @@ class _StatisticsState extends State<Statistics> {
                   ),
                 Expanded(
                   flex:1,
-                  child: Column(
-                    children: [
-                      FutureBuilder(
-                        future: getExpendedOfActualMonth(),
-                        builder: (context, snapshot) {
-                          if (snapshot.connectionState == ConnectionState.waiting) {
-                            return CircularProgressIndicator();
-                          } else {
-                            return Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    Icons.square,
-                                    color: const Color.fromARGB(255, 207, 0, 0),
-                                    size: 30,
-                                  ),
-                                  Text(
-                                    "Expended: ${snapshot.data!["totalExpended"]}€",
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                      color: const Color.fromARGB(255, 212, 0, 0),
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ],
-                              );
-                          }
-                        }),
-                      
-                      FutureBuilder(
-                        future: getExpendedOfActualMonth(),
-                        builder: (context, snapshot) {
-                          if (snapshot.connectionState == ConnectionState.waiting) {
-                            return CircularProgressIndicator();
-                          } else {
-                            return Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    Icons.square,
-                                    color: const Color.fromARGB(255, 9, 102, 45),
-                                    size: 30,
-                                  ),
-                                  Text(
-                                    "Earned: ${snapshot.data!["totalEarned"]}€",
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                      color: const Color.fromARGB(255, 9, 102, 45),
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ],
-                              );
-                          }
-                        }
+                  child: Container(
+                        width: MediaQuery.of(context).size.width * 0.3,
+                        child: Column(
+                        children: [
+                          FutureBuilder(
+                            future: getExpendedOfActualMonth(),
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState == ConnectionState.waiting) {
+                                return CircularProgressIndicator();
+                              } else {
+                                return Container(
+                                  alignment: Alignment.centerLeft,
+                                    width: MediaQuery.of(context).size.width * 0.5,
+                                    child:Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Icon(
+                                        Icons.square,
+                                        color: const Color.fromARGB(255, 207, 0, 0),
+                                        size: 20,
+                                      ),
+                                      Text(
+                                        "Expended: ${formatNumber(snapshot.data!["totalExpended"])}€",
+                                        maxLines: 1,
+                                        textAlign: TextAlign.left,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: TextStyle(
+                                          color: const Color.fromARGB(255, 212, 0, 0),
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ],
+                                  )
+                                  );
+                              }
+                            }),
+                          
+                          
+                          FutureBuilder(
+                            future: getExpendedOfActualMonth(),
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState == ConnectionState.waiting) {
+                                return CircularProgressIndicator();
+                              } else {
+                                return Container(
+                                  alignment: Alignment.centerLeft,
+                                  width: MediaQuery.of(context).size.width * 0.5,
+                                  child:  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Icon(
+                                        Icons.square,
+                                        color: const Color.fromARGB(255, 9, 102, 45),
+                                        size: 20,
+                                      ),
+                                      Text(
+                                        "Earned: ${formatNumber(snapshot.data!["totalEarned"])}€",
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: TextStyle(
+                                          color: const Color.fromARGB(255, 9, 102, 45),
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ],
+                                  )
+                                );
+
+                                   
+                              }
+                            }
+                          ),
+                        ],
                       ),
-                      
-                    ],
-                  )
+                    )
                 ),
               ],
             ),
@@ -163,6 +177,16 @@ class _StatisticsState extends State<Statistics> {
       )
     );
     
+  }
+  String formatNumber(double number){
+
+    if (number < 1000){
+      return number.toString();
+    }
+    if (number < 1000000){
+      return (number/1000).toStringAsFixed(2) + "K";
+    }
+    return (number/1000000).toStringAsFixed(2) + "M";
   }
 
   Future<Map<String,dynamic>> getExpendedOfActualMonth() async {
