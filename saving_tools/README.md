@@ -1,16 +1,58 @@
-# saving_tools
+# SavingTools
 
-A new Flutter project.
+## Overview
 
-## Getting Started
+SavingTools is a Flutter-based mobile application designed to help users save money effectively. The app provides insightful graphs and statistics about users' income and expenses, allowing them to track their financial health in an intuitive way.
 
-This project is a starting point for a Flutter application.
+## Features
 
-A few resources to get you started if this is your first Flutter project:
+ - **User Registration & Authentication**: Secure sign-up and login functionality.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+- **Invoice Management**: Users can register their invoices to track expenses and income.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- **Graphical Insights**: Visual representation of financial data through graphs and charts.
+
+- **Expense & Income Statistics**: Summarized reports to help users analyze their financial habits.
+
+- **Data Security**: Ensures user data privacy and security.
+
+## **Installation**
+
+## Prerequisites
+
+Ensure you have the following installed:
+
+  - Flutter SDK
+
+  - Dart
+
+  - Android Studio or VS Code with Flutter plugin
+
+  - A connected device or emulator
+
+
+## Steps to Run the App
+
+ - Clone the repository:
+  ```bash
+  git clone https://github.com/yourusername/SavingTools.git
+  ```
+ - Navigate to the project directory:
+  ```bash
+  cd SavingTools
+  ```
+ - Install dependencies:
+  ```bash
+   flutter pub get
+  ```
+ - Run the application:
+  ```bash
+  flutter run
+  ```
+# Technologies Used
+
+ - Flutter - UI framework for cross-platform development
+
+ - Dart - Programming language for Flutter
+
+ - SQLite
